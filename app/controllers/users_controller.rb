@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :set_users, only: [:edit, :update]
   def show # 追加
    @user = User.find(params[:id])
   end
@@ -7,7 +8,7 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-def create
+  def create
     @user = User.new(user_params)
     if @user.save
       flash[:success] = "Welcome to the Sample App!"
@@ -15,12 +16,27 @@ def create
     else
       render 'new'
     end
-end
-
+  end
+  
+  def edit
+  end
+  
+  def update
+    if @user.update(user_params)
+    redirect_to @user
+    else
+      redirect_to edit_user_path(@user)
+    end
+  end
+  
   private
 
   def user_params
-    params.require(:user).permit(:name, :email, :password,
+    params.require(:user).permit(:name, :email,:area,:profile, :password,
                                  :password_confirmation)
+  end
+  
+  def set_users
+    @user = User.find(params[:id])
   end
 end
